@@ -1,7 +1,7 @@
 import React from 'react';
 
 function RecentActivity({ recentActivityList }) {
-	console.log(recentActivityList);
+	// console.log(recentActivityList);
 	return recentActivityList.map((activity) => (
 		<div>
 			<div>

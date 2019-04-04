@@ -1,7 +1,7 @@
 import React from 'react';
 
 function TodayReview({ reviewOfTheDay }) {
-	console.log('review::: ', reviewOfTheDay);
+	// console.log('review::: ', reviewOfTheDay);
 	return (
 		<div>
 			<div>userName</div>

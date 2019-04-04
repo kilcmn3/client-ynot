@@ -3,8 +3,10 @@ import LocationRecommendation from './LocationRecommendation';
 import TodayReview from './TodayReview';
 import RecentActivity from './RecentActivity';
 import Search from './Search';
+import config from '../config/config.json';
 
-const GOOGLEMAPAPIKEY = 'AIzaSyBCXHmnzN86txpvCJnC6Z5h_-DUiBRVYgE';
+let GOOGLEMAPAPIKEY = config.GOOGLEMAPAPIKEY;
+
 class Main extends Component {
 	constructor() {
 		super();
@@ -15,16 +17,22 @@ class Main extends Component {
 			searchInput: null,
 			searchResult: null,
 			error: null,
-			currentLoc: null
+			currentLoc: null,
+			generateData: false
 		};
 		this._fetchMatchingDataToSearchInput = this._fetchMatchingDataToSearchInput.bind(this);
 		this._triggerFetchWithClick = this._triggerFetchWithClick.bind(this);
 	}
 
 	componentDidMount() {
-		fetch('http://localhost:3002/generateData').then((res) => res.json()).then((json) => {
-			console.log(json);
-		});
+		console.log('generateData:::: ', this.state.generateData);
+		if (!this.state.generateData) {
+			console.log('generateData::: ', 'executeddd!!!!!');
+			fetch('http://localhost:3002/generateData');
+			this.setState({
+				generateData: true
+			});
+		}
 		this._getTodayReview();
 		this._getTop9RecentActivities();
 		this._triggerFetchRestaurantsNearby();
@@ -45,16 +53,6 @@ class Main extends Component {
 			});
 		});
 	}
-
-	// _pickTheReviewOfTheDay(acc, cur) {
-	// 	if (acc.rating > cur.rating) {
-	// 		return acc;
-	// 	} else if (acc.rating === cur.rating) {
-	// 		return acc.comment.length > cur.comment.length ? acc : cur;
-	// 	} else {
-	// 		return cur;
-	// 	}
-	// }
 
 	_updateSearchInput(e) {
 		this.setState({
@@ -90,6 +88,7 @@ class Main extends Component {
 	// }
 
 	_getAddressOfCurrentLocation(lat, lon) {
+		console.log(config.GOOGLEMAPAPIKEY);
 		fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${GOOGLEMAPAPIKEY}`)
 			.then((res) => res.json())
 			.then((json) => {
