@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Main from './Main_Page/Main';
 import ItemPageArch from './Item_Page/ItemPageArch';
 import SearchPage from './Search_Page/Component/SeachPage';
-import Review from './review';
+import Review from './Review_Page/Review';
 
 const App = () => {
 	return (
