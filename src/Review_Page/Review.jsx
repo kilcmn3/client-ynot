@@ -13,7 +13,7 @@ class Reviews extends Component {
 			{ value: 'ilmo', id: 5 }
 		],
 		showItems: false,
-		selectUser: this.props.users && this.props.users[0]
+		currentUser: {} //in dropbox, it will show as an empty selection.
 	};
 
 	sendReview() {
@@ -21,7 +21,7 @@ class Reviews extends Component {
 			method: 'POST',
 			body: JSON.stringify({
 				rating: '5',
-				comment: this.state.text, //when using feth method and wants to includ this.state.foo , simply use as this.state.foo.
+				comment: this.state.text, // simply use as this.state.foo when sending thru JSON.stringify.
 				photo: 'https://media-cdn.tripadvisor.com/media/photo-s/11/a3/8e/03/caption.jpg',
 				restaurantID: '1',
 				userID: '1'
@@ -49,7 +49,7 @@ class Reviews extends Component {
 
 	selectUser = (user) =>
 		this.setState({
-			selectUser: user,
+			currentUser: user, //After onClick(dropDown), currentUser will have users value.
 			showItems: false
 		});
 
@@ -57,41 +57,51 @@ class Reviews extends Component {
 		//{history] method is acceptable ,but if there is specific url(in this case restaurant_id) that links to review page (same as going back to previouse job) ,client can go back
 		//to the previous item page.
 		// const { history, match } = this.props;
+		const { currentUser } = this.state;
 		return (
 			<div style={{ margin: '16px', position: 'relative' }}>
-				<div className="select-box--arrow" onClick={this.dropDown}>
-					<span className={`${this.state.showItems ? 'select-box--arrow-up' : 'select-box--arrow-down'}`} />
-				</div>
-				<div style={{ display: this.state.showItems ? 'block' : 'none' }}>
-					{this.state.users.map((user) => (
-						<div
-							key={user.id}
-							onClick={() => this.selectUser(user)}
-							className={this.state.selectUser === user ? 'selected' : ''}
-						>
-							{' '}
-							{user.value}
+				<div className="select-box--box" style={{ width: this.props.width || 180 }}>
+					<div className="select-box--container">
+						{currentUser && <div className="select-box--selected-item"> {currentUser.value}</div>}
+						<div className="select-box--arrow" onClick={this.dropDown}>
+							<span
+								className={`${this.state.showItems
+									? 'select-box--arrow-up'
+									: 'select-box--arrow-down'}`}
+							/>
 						</div>
-					))}
-				</div>
-				<div>
-					<textarea
-						placeholder="write your review"
-						value={this.state.text}
-						onChange={(e) => {
-							this.setState({ text: e.target.value });
-						}}
-					/>
-					<br />
-					{/*Deleted onClick function, will replace by sendingReivew method() to request 'post' to server.*/}
-					<button
-						onClick={() => {
-							this.sendReview();
-							// history.push(`/item/${match.params.itemId}`);
-						}}
-					>
-						Post Review
-					</button>
+						<div style={{ display: this.state.showItems ? 'block' : 'none' }} className="select-box--item">
+							{this.state.users.map((user) => (
+								<div
+									key={user.id}
+									onClick={() => this.selectUser(user)}
+									className={this.state.selectUser === user ? 'selected' : ''}
+								>
+									{user.value}
+								</div>
+							))}
+						</div>
+						<div>
+							<br />
+							<textarea
+								placeholder="write your review"
+								value={this.state.text}
+								onChange={(e) => {
+									this.setState({ text: e.target.value });
+								}}
+							/>
+							<br />
+							{/*Deleted onClick function, will replace by sendingReivew method() to request 'post' to server.*/}
+							<button
+								onClick={() => {
+									this.sendReview();
+									// history.push(`/item/${match.params.itemId}`);
+								}}
+							>
+								Post Review
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		);
